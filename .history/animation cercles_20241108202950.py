@@ -23,11 +23,11 @@ ECHELLE=10
 
 
 class Cercle:
-    def __init__(self,rayon,vitesse,angle):
+    def __init__(self,rayon,vitesse):
         self.vitesse=vitesse
         self.rayon=rayon
         self.pos=None
-        self.angle=angle
+        self.angle=0
 
 class Marqueur:
     def __init__(self):
@@ -58,8 +58,8 @@ class Affichage:
         self.initialiser_cercles()
 
 
-    def creer_cercle(self,rayon,vitesse,angle):
-        cercle=Cercle(rayon,vitesse,angle)
+    def creer_cercle(self,rayon,vitesse):
+        cercle=Cercle(rayon,vitesse)
         self.liste_cercles.append(cercle)
         return cercle
 
@@ -68,11 +68,11 @@ class Affichage:
         
         for n in range(2*self.nb_cercles):
             if n%2==0:
-                cercle=self.creer_cercle(self.liste_rayons[n]*ECHELLE,n/2,self.liste_phases[n])
+                cercle=self.creer_cercle(self.liste_rayons[n]*ECHELLE,n/2)
                 pos[0]+=cercle.rayon*np.cos(self.liste_phases[n])
                 pos[1]+=cercle.rayon*np.sin(self.liste_phases[n])
             else:
-                cercle=self.creer_cercle(self.liste_rayons[n]*ECHELLE,-(n+1)/2,self.liste_phases[n])
+                cercle=self.creer_cercle(self.liste_rayons[n]*ECHELLE,-(n+1)/2)
                 pos[0]+=cercle.rayon*np.cos(self.liste_phases[n])
                 pos[1]+=cercle.rayon*np.sin(self.liste_phases[n])
             
@@ -98,14 +98,14 @@ class Affichage:
 
     def dessiner(self):
         for i in range(len(self.liste_points)-1):
-            py.draw.line(self.fenetre,rouge,self.liste_points[i],self.liste_points[i+1],4)
+            py.draw.line(self.fenetre,rouge,self.liste_points[i],self.liste_points[i+1],2)
 
         py.draw.circle(self.fenetre,bleu,self.marqueur.pos,2)
 
     def dessiner_cercles(self):
         for cercle in self.liste_cercles:
             py.draw.circle(self.fenetre,noir,cercle.pos,2)
-            py.draw.circle(self.fenetre,noir,cercle.pos,cercle.rayon,1)
+            py.draw.circle(self.fenetre,noir,cercle.pos,abs(cercle.rayon),1)
     
     def fonction(self,t):
         # if t<=math.pi:
@@ -113,22 +113,20 @@ class Affichage:
         # else:
         #     return (2*t/math.pi)-3
         
-        # if t<np.pi/4:
-        #     return (1-t/(np.pi/4))+(t/(np.pi/4))*(1+1j)
-        # elif t<3*np.pi/4:
-        #     return (1-t/(3*np.pi/4))*(1+1j)+(t/(3*np.pi/4))*(-1+1j)
-        # elif t<5*np.pi/4:
-        #     return (1-t/(5*np.pi/4))*(-1+1j)+(t/(5*np.pi/4))*(-1-1j)
-        # elif t<7*np.pi/4:
-        #     return (1-t/(7*np.pi/4))*(-1-1j)+(t/(7*np.pi/4))*(1-1j)
-        # else:
-        #     return (1-t/(2*np.pi))*(1-1j)+(t/(2*np.pi))
+        if t<np.pi/4:
+            return (1-t)*(1+1j)
+        elif t<3*np.pi/3:
+            return t*(1+1j)+(1-t)*(-1+1j)
+        elif t<5*np.pi/3:
+            return t*(-1+1j)+(1-t)*(-1-1j)
+        else:
+            return t*(-1-1j)
         
         # return np.cos(t)+1j*np.sin(t)
         
-        x = 16 * np.sin(t)**3
-        y = 13 * np.cos(t) - 5 * np.cos(2 * t) - 2 * np.cos(3 * t) - np.cos(4 * t)
-        return x + 1j * -y  # Combinaison en forme complexe pour Fourier
+        # x = 16 * np.sin(t)**3
+        # y = 13 * np.cos(t) - 5 * np.cos(2 * t) - 2 * np.cos(3 * t) - np.cos(4 * t)
+        # return x + 1j * y  # Combinaison en forme complexe pour Fourier
     
     def exp_complexe(self,t):
         return np.exp(1j*t)
@@ -136,26 +134,16 @@ class Affichage:
     def calculer_coefficients(self):
         for i in range(2*self.nb_cercles):
             n = i // 2 if i % 2 == 0 else -(i + 1) // 2
-            coefficient=scipy.integrate.quad(lambda t:(self.fonction(t)*self.exp_complexe(-n*t)).real,0,2*np.pi)[0] + 1j*scipy.integrate.quad(lambda t:(self.fonction(t)*self.exp_complexe(-n*t)).imag,0,2*np.pi)[0]
-            coefficient/=2*np.pi
+            # coefficient=scipy.integrate.quad(lambda t:(self.fonction(t)*self.exp_complexe(-n*t)).real,0,2*np.pi)[0] + 1j*scipy.integrate.quad(lambda t:(self.fonction(t)*self.exp_complexe(-n*t)).imag,0,2*np.pi)[0]
+            # coefficient/=2*np.pi
             
-            # if i%2==1:
-            #     coefficient=0
-            
-            # if n%2==1:
-            #     coefficient=2/(n*np.pi*1j)
-            # else:
-            #     coefficient=0
-                
-            
+            re = scipy.integrate.quad(lambda t: self.fonction(t).real * np.cos(n * t), 0, 2 * np.pi)[0]
+            im = scipy.integrate.quad(lambda t: self.fonction(t).imag * np.sin(n * t), 0, 2 * np.pi)[0]
+            coefficient = (re + 1j * im) / (2 * np.pi)
             self.liste_rayons.append(abs(coefficient))
             self.liste_phases.append(np.angle(coefficient))
-            
-            
-            
-        print(self.liste_phases)
-        print(self.liste_rayons)
-        
+        # print(self.liste_phases)
+        # print(self.liste_rayons)
         
         
         # x_values = np.linspace(-1, 1, num=self.nb_cercles)
@@ -208,7 +196,7 @@ class Affichage:
         py.quit()
 
 
-nb_cercles=50
+nb_cercles=10
 
 
 

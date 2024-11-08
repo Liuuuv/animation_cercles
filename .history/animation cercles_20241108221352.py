@@ -98,7 +98,7 @@ class Affichage:
 
     def dessiner(self):
         for i in range(len(self.liste_points)-1):
-            py.draw.line(self.fenetre,rouge,self.liste_points[i],self.liste_points[i+1],4)
+            py.draw.line(self.fenetre,rouge,self.liste_points[i],self.liste_points[i+1],2)
 
         py.draw.circle(self.fenetre,bleu,self.marqueur.pos,2)
 

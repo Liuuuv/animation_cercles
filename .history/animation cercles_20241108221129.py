@@ -19,15 +19,15 @@ bleu=(0,0,255)
 
 
 FPS=144
-ECHELLE=10
+ECHELLE=50
 
 
 class Cercle:
-    def __init__(self,rayon,vitesse,angle):
+    def __init__(self,rayon,vitesse):
         self.vitesse=vitesse
         self.rayon=rayon
         self.pos=None
-        self.angle=angle
+        self.angle=0
 
 class Marqueur:
     def __init__(self):
@@ -98,7 +98,7 @@ class Affichage:
 
     def dessiner(self):
         for i in range(len(self.liste_points)-1):
-            py.draw.line(self.fenetre,rouge,self.liste_points[i],self.liste_points[i+1],4)
+            py.draw.line(self.fenetre,rouge,self.liste_points[i],self.liste_points[i+1],2)
 
         py.draw.circle(self.fenetre,bleu,self.marqueur.pos,2)
 
@@ -113,22 +113,22 @@ class Affichage:
         # else:
         #     return (2*t/math.pi)-3
         
-        # if t<np.pi/4:
-        #     return (1-t/(np.pi/4))+(t/(np.pi/4))*(1+1j)
-        # elif t<3*np.pi/4:
-        #     return (1-t/(3*np.pi/4))*(1+1j)+(t/(3*np.pi/4))*(-1+1j)
-        # elif t<5*np.pi/4:
-        #     return (1-t/(5*np.pi/4))*(-1+1j)+(t/(5*np.pi/4))*(-1-1j)
-        # elif t<7*np.pi/4:
-        #     return (1-t/(7*np.pi/4))*(-1-1j)+(t/(7*np.pi/4))*(1-1j)
-        # else:
-        #     return (1-t/(2*np.pi))*(1-1j)+(t/(2*np.pi))
+        if t<np.pi/4:
+            return (1-t/(np.pi/4))+(t/(np.pi/4))*(1+1j)
+        elif t<3*np.pi/4:
+            return (1-t/(3*np.pi/4))*(1+1j)+(t/(3*np.pi/4))*(-1+1j)
+        elif t<5*np.pi/4:
+            return (1-t/(5*np.pi/4))*(-1+1j)+(t/(5*np.pi/4))*(-1-1j)
+        elif t<7*np.pi/4:
+            return (1-t/(7*np.pi/4))*(-1-1j)+(t/(7*np.pi/4))*(1-1j)
+        else:
+            return (1-t/(2*np.pi))*(1-1j)+(t/(2*np.pi))
         
         # return np.cos(t)+1j*np.sin(t)
         
-        x = 16 * np.sin(t)**3
-        y = 13 * np.cos(t) - 5 * np.cos(2 * t) - 2 * np.cos(3 * t) - np.cos(4 * t)
-        return x + 1j * -y  # Combinaison en forme complexe pour Fourier
+        # x = 16 * np.sin(t)**3
+        # y = 13 * np.cos(t) - 5 * np.cos(2 * t) - 2 * np.cos(3 * t) - np.cos(4 * t)
+        # return x + 1j * y  # Combinaison en forme complexe pour Fourier
     
     def exp_complexe(self,t):
         return np.exp(1j*t)
@@ -208,7 +208,7 @@ class Affichage:
         py.quit()
 
 
-nb_cercles=50
+nb_cercles=30
 
 
 

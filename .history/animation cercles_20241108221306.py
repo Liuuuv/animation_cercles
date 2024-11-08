@@ -19,7 +19,7 @@ bleu=(0,0,255)
 
 
 FPS=144
-ECHELLE=10
+ECHELLE=100
 
 
 class Cercle:
@@ -98,7 +98,7 @@ class Affichage:
 
     def dessiner(self):
         for i in range(len(self.liste_points)-1):
-            py.draw.line(self.fenetre,rouge,self.liste_points[i],self.liste_points[i+1],4)
+            py.draw.line(self.fenetre,rouge,self.liste_points[i],self.liste_points[i+1],2)
 
         py.draw.circle(self.fenetre,bleu,self.marqueur.pos,2)
 
@@ -108,10 +108,10 @@ class Affichage:
             py.draw.circle(self.fenetre,noir,cercle.pos,cercle.rayon,1)
     
     def fonction(self,t):
-        # if t<=math.pi:
-        #     return (-2*t/math.pi)+1
-        # else:
-        #     return (2*t/math.pi)-3
+        if t<=math.pi:
+            return (-2*t/math.pi)+1
+        else:
+            return (2*t/math.pi)-3
         
         # if t<np.pi/4:
         #     return (1-t/(np.pi/4))+(t/(np.pi/4))*(1+1j)
@@ -126,9 +126,9 @@ class Affichage:
         
         # return np.cos(t)+1j*np.sin(t)
         
-        x = 16 * np.sin(t)**3
-        y = 13 * np.cos(t) - 5 * np.cos(2 * t) - 2 * np.cos(3 * t) - np.cos(4 * t)
-        return x + 1j * -y  # Combinaison en forme complexe pour Fourier
+        # x = 16 * np.sin(t)**3
+        # y = 13 * np.cos(t) - 5 * np.cos(2 * t) - 2 * np.cos(3 * t) - np.cos(4 * t)
+        # return x + 1j * y  # Combinaison en forme complexe pour Fourier
     
     def exp_complexe(self,t):
         return np.exp(1j*t)

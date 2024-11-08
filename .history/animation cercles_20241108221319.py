@@ -19,7 +19,7 @@ bleu=(0,0,255)
 
 
 FPS=144
-ECHELLE=10
+ECHELLE=100
 
 
 class Cercle:
@@ -98,7 +98,7 @@ class Affichage:
 
     def dessiner(self):
         for i in range(len(self.liste_points)-1):
-            py.draw.line(self.fenetre,rouge,self.liste_points[i],self.liste_points[i+1],4)
+            py.draw.line(self.fenetre,rouge,self.liste_points[i],self.liste_points[i+1],2)
 
         py.draw.circle(self.fenetre,bleu,self.marqueur.pos,2)
 
@@ -128,7 +128,7 @@ class Affichage:
         
         x = 16 * np.sin(t)**3
         y = 13 * np.cos(t) - 5 * np.cos(2 * t) - 2 * np.cos(3 * t) - np.cos(4 * t)
-        return x + 1j * -y  # Combinaison en forme complexe pour Fourier
+        return x + 1j * y  # Combinaison en forme complexe pour Fourier
     
     def exp_complexe(self,t):
         return np.exp(1j*t)
