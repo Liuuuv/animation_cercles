@@ -105,7 +105,7 @@ class Affichage:
 
 
     def dessiner(self):
-        epaisseur_max=int(2*ECHELLE)
+        epaisseur_max=(3/5)*ECHELLE
         for i in range(len(self.liste_points)-1):
             
             if not (self.liste_points[i][0],self.liste_points[i][1]) in self.distance_points.keys():

@@ -21,7 +21,7 @@ bleu=(0,0,255)
 
 
 FPS=144
-ECHELLE=1
+ECHELLE=5
 
 
 class Cercle:
@@ -98,22 +98,14 @@ class Affichage:
         self.marqueur.pos[1]=self.liste_cercles[-1].pos[1]+self.liste_cercles[-1].rayon*math.sin(self.liste_cercles[-1].angle)
 
         self.liste_points.append(self.marqueur.pos[:])
-    
-    def distance(self,pos1,pos2):
-        return np.sqrt((pos2[0]-pos1[0])**2+(pos2[1]-pos1[1])**2)
 
 
 
     def dessiner(self):
-        epaisseur_max=int(2*ECHELLE)
         for i in range(len(self.liste_points)-1):
-            
-            if not (self.liste_points[i][0],self.liste_points[i][1]) in self.distance_points.keys():
-                self.distance_points[(self.liste_points[i][0],self.liste_points[i][1])]=self.distance(self.liste_points[i],self.liste_points[i+1])
-            epaisseur=min(int(epaisseur_max/np.sqrt(self.distance_points[(self.liste_points[i][0],self.liste_points[i][1])])),epaisseur_max)
-            
-            py.draw.line(self.fenetre,rouge,self.liste_points[i],self.liste_points[i+1],epaisseur)
-            
+            py.draw.line(self.fenetre,rouge,self.liste_points[i],self.liste_points[i+1],1)
+            if (self.liste_points[i][0],self.liste_points[i][1]) in self.distance_points.keys():
+                self.distance_points(self.liste_points)
         py.draw.circle(self.fenetre,bleu,self.marqueur.pos,2)
 
     def dessiner_cercles(self):

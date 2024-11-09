@@ -13,7 +13,6 @@ py.init()
 
 blanc=(255,255,255)
 noir=(0,0,0)
-gris=(200,200,200)
 
 rouge=(255,0,0)
 vert=(0,255,0)
@@ -47,17 +46,14 @@ class Affichage:
 
         self.marqueur=Marqueur()
 
-        self.dt=1/(5*FPS)
+        self.dt=1/FPS
 
         self.liste_cercles=[]
         self.liste_rayons=[]
         self.liste_phases=[]
         self.liste_points=[]
         
-        self.distance_points={}
-        
-        # self.calculer_coefficients()
-        self.calculer_coefficients_discret()
+        self.calculer_coefficients()
         
 
         self.initialiser_cercles()
@@ -98,28 +94,19 @@ class Affichage:
         self.marqueur.pos[1]=self.liste_cercles[-1].pos[1]+self.liste_cercles[-1].rayon*math.sin(self.liste_cercles[-1].angle)
 
         self.liste_points.append(self.marqueur.pos[:])
-    
-    def distance(self,pos1,pos2):
-        return np.sqrt((pos2[0]-pos1[0])**2+(pos2[1]-pos1[1])**2)
 
 
 
     def dessiner(self):
-        epaisseur_max=int(2*ECHELLE)
         for i in range(len(self.liste_points)-1):
-            
-            if not (self.liste_points[i][0],self.liste_points[i][1]) in self.distance_points.keys():
-                self.distance_points[(self.liste_points[i][0],self.liste_points[i][1])]=self.distance(self.liste_points[i],self.liste_points[i+1])
-            epaisseur=min(int(epaisseur_max/np.sqrt(self.distance_points[(self.liste_points[i][0],self.liste_points[i][1])])),epaisseur_max)
-            
-            py.draw.line(self.fenetre,rouge,self.liste_points[i],self.liste_points[i+1],epaisseur)
-            
+            py.draw.line(self.fenetre,rouge,self.liste_points[i],self.liste_points[i+1],4)
+
         py.draw.circle(self.fenetre,bleu,self.marqueur.pos,2)
 
     def dessiner_cercles(self):
         for cercle in self.liste_cercles:
-            py.draw.circle(self.fenetre,gris,cercle.pos,2)
-            py.draw.circle(self.fenetre,gris,cercle.pos,cercle.rayon,1)
+            py.draw.circle(self.fenetre,noir,cercle.pos,2)
+            py.draw.circle(self.fenetre,noir,cercle.pos,cercle.rayon,1)
     
     def fonction(self,t):
         # if t<=math.pi:
@@ -148,62 +135,43 @@ class Affichage:
         return np.exp(1j*t)
     
     def calculer_coefficients(self):
-        for i in range(2*self.nb_cercles):
-            n = i // 2 if i % 2 == 0 else -(i + 1) // 2
-            coefficient=scipy.integrate.quad(lambda t:(self.fonction(t)*self.exp_complexe(-n*t)).real,0,2*np.pi)[0] + 1j*scipy.integrate.quad(lambda t:(self.fonction(t)*self.exp_complexe(-n*t)).imag,0,2*np.pi)[0]
-            coefficient/=2*np.pi
+        # for i in range(2*self.nb_cercles):
+        #     n = i // 2 if i % 2 == 0 else -(i + 1) // 2
+        #     coefficient=scipy.integrate.quad(lambda t:(self.fonction(t)*self.exp_complexe(-n*t)).real,0,2*np.pi)[0] + 1j*scipy.integrate.quad(lambda t:(self.fonction(t)*self.exp_complexe(-n*t)).imag,0,2*np.pi)[0]
+        #     coefficient/=2*np.pi
             
-            # if i%2==1:
-            #     coefficient=0
+        #     # if i%2==1:
+        #     #     coefficient=0
             
-            # if n%2==1:
-            #     coefficient=2/(n*np.pi*1j)
-            # else:
-            #     coefficient=0
+        #     # if n%2==1:
+        #     #     coefficient=2/(n*np.pi*1j)
+        #     # else:
+        #     #     coefficient=0
                 
             
-            self.liste_rayons.append(abs(coefficient))
-            self.liste_phases.append(np.angle(coefficient))
+        #     self.liste_rayons.append(abs(coefficient))
+        #     self.liste_phases.append(np.angle(coefficient))
             
             
             
-        # print(self.liste_phases)
-        # print(self.liste_rayons)
+        # # print(self.liste_phases)
+        # # print(self.liste_rayons)
         
         
         
-        # x_values = np.linspace(-1, 1, num=self.nb_cercles)
-        # # Calculer la transformée de Fourier discrète
-        # coefficients = np.fft.fft([self.fonction(t) for t in x_values]) / len(x_values)
+        # # x_values = np.linspace(-1, 1, num=self.nb_cercles)
+        # # # Calculer la transformée de Fourier discrète
+        # # coefficients = np.fft.fft([self.fonction(t) for t in x_values]) / len(x_values)
         
         
-        # for n in range(self.nb_cercles):
-        #     self.liste_rayons.append(abs(coefficients[n]))
-        #     self.liste_phases.append(np.angle(coefficients[n]))
+        # # for n in range(self.nb_cercles):
+        # #     self.liste_rayons.append(abs(coefficients[n]))
+        # #     self.liste_phases.append(np.angle(coefficients[n]))
     
-    def calculer_coefficients_discret(self):
-        liste_coordonnees=calculer_coefficients()
-        # liste_coordonnees=[self.fonction(t) for t in np.linspace(0,2*np.pi,num=100,endpoint=False)]
-        nb_coordonnes=len(liste_coordonnees)
-        
-        for i in range(2*nb_coordonnes):
-            k = i // 2 if i % 2 == 0 else -(i + 1) // 2
-            somme=0
-            for n in range(nb_coordonnes):
-                somme+=liste_coordonnees[n]*self.exp_complexe(-2*np.pi*k*n/nb_coordonnes)
-            somme/=nb_coordonnes
-            self.liste_rayons.append(abs(somme))
-            self.liste_phases.append(np.angle(somme))
-        
-        if 2*nb_coordonnes<2*self.nb_cercles:
-            for n in range(2*nb_coordonnes,2*self.nb_cercles):
-                self.liste_phases.append(0)
-                self.liste_rayons.append(0)
-
-        # print(self.liste_rayons)
-        # print(self.liste_phases)
-        
-        
+        liste_coefficients=calculer_coefficients()
+        for coef in liste_coefficients:
+            self.liste_rayons.append(abs(coef))
+            self.liste_phases.append(np.angle(coef))
             
 
     def loop(self):
@@ -244,7 +212,9 @@ class Affichage:
         py.quit()
 
 
-nb_cercles=400
+nb_cercles=50
+
+
 
 
 facteur=0.8
