@@ -47,7 +47,7 @@ class Affichage:
 
         self.marqueur=Marqueur()
 
-        self.dt=1/(1.5*FPS)
+        self.dt=1/(5*FPS)
 
         self.liste_cercles=[]
         self.liste_rayons=[]
@@ -105,14 +105,14 @@ class Affichage:
 
 
     def dessiner(self):
-        gerer_epaisseur=False
+        gerer_epaisseur=True
         if gerer_epaisseur:
             epaisseur_max=int(3*ECHELLE)
             for i in range(len(self.liste_points)-1):
                 
                 if not (self.liste_points[i][0],self.liste_points[i][1]) in self.distance_points.keys():
                     self.distance_points[(self.liste_points[i][0],self.liste_points[i][1])]=self.distance(self.liste_points[i],self.liste_points[i+1])
-                epaisseur=min(int(epaisseur_max/(self.distance_points[(self.liste_points[i][0],self.liste_points[i][1])])**0.8),epaisseur_max)
+                epaisseur=min(int(epaisseur_max/(self.distance_points[(self.liste_points[i][0],self.liste_points[i][1])])**2),epaisseur_max)
                 
                 py.draw.line(self.fenetre,rouge,self.liste_points[i],self.liste_points[i+1],epaisseur)
         else:
@@ -249,7 +249,7 @@ class Affichage:
         py.quit()
 
 
-nb_cercles=150
+nb_cercles=80
 
 
 facteur=0.8

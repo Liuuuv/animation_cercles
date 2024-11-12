@@ -6,9 +6,9 @@ from scipy import ndimage
 
 def calculer_coefficients():
     # Charger l'image et la convertir en niveaux de gris
-    # image = io.imread('C:/Users/olivi/kDrive/projets/loisir/image/rui_tachibana2.png')  # Remplace par le chemin de ton image
+    image = io.imread('C:/Users/olivi/kDrive/projets/loisir/image/rui_tachibana2.png')  # Remplace par le chemin de ton image
     # image=io.imread('C:/Users/olivi/Desktop/edit/ppppp.jpg')
-    image=io.imread('C:/Users/olivi/Downloads/caca.png')
+    # image=io.imread('C:/Users/olivi/Downloads/sigma.png')
     # image=io.imread('C:/Users/olivi/Downloads/Sans titre.png')
     resolution=(len(image[0]),len(image))
     gray_image = color.rgb2gray(image)
@@ -17,7 +17,7 @@ def calculer_coefficients():
     smoothed_image = filters.gaussian(gray_image, sigma=1)
 
     # Détecter les contours avec l'algorithme de Canny
-    edges = feature.canny(smoothed_image, sigma=3)
+    edges = feature.canny(smoothed_image, sigma=0.7)
 
     # Extraire les coordonnées des points du contour
     y, x = np.nonzero(edges)  # y et x représentent les coordonnées des pixels du contour

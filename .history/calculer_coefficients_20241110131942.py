@@ -17,7 +17,7 @@ def calculer_coefficients():
     smoothed_image = filters.gaussian(gray_image, sigma=1)
 
     # Détecter les contours avec l'algorithme de Canny
-    edges = feature.canny(smoothed_image, sigma=3)
+    edges = feature.canny(smoothed_image, sigma=0.7)
 
     # Extraire les coordonnées des points du contour
     y, x = np.nonzero(edges)  # y et x représentent les coordonnées des pixels du contour
@@ -42,7 +42,7 @@ def calculer_coefficients():
     ordered_contour_points = np.array(ordered_contour_points)
 
     # Définir le facteur de réduction
-    reduction_factor = 2  # Ajustez pour obtenir le nombre de points souhaité
+    reduction_factor = 3  # Ajustez pour obtenir le nombre de points souhaité
 
     # Sélectionner un point tous les 'reduction_factor' indices
     reduced_contour_points = ordered_contour_points[::reduction_factor]

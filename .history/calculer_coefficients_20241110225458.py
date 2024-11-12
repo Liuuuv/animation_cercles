@@ -17,7 +17,7 @@ def calculer_coefficients():
     smoothed_image = filters.gaussian(gray_image, sigma=1)
 
     # Détecter les contours avec l'algorithme de Canny
-    edges = feature.canny(smoothed_image, sigma=3)
+    edges = feature.canny(smoothed_image, sigma=0.1)
 
     # Extraire les coordonnées des points du contour
     y, x = np.nonzero(edges)  # y et x représentent les coordonnées des pixels du contour

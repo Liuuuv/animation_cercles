@@ -47,7 +47,7 @@ class Affichage:
 
         self.marqueur=Marqueur()
 
-        self.dt=1/(1.5*FPS)
+        self.dt=1/(0.2*FPS)
 
         self.liste_cercles=[]
         self.liste_rayons=[]
